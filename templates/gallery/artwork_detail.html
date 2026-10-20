@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ artwork.title }} — Eliani Harsha{% endblock %}
+{% block description %}{{ artwork.description|default:artwork.title }}{% endblock %}
+{% block social_meta %}
+<meta property="og:type" content="article">
+<meta property="og:title" content="{{ artwork.title }} — Eliani Harsha">
+<meta property="og:description" content="{{ artwork.description|default:artwork.title }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ artwork.image.url }}">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+{% block content %}
+<article class="artwork-detail">
+  <div class="detail-image"><img src="{{ artwork.image.url }}" alt="{{ artwork.alt_text|default:artwork.title }}"></div>
+  <div class="detail-copy">
+    <a class="back-link" href="{% url 'artwork_list' %}">← Todas as obras</a>
+    <p class="eyebrow">Obra · Eliani Harsha</p>
+    <h1>{{ artwork.title }}</h1>
+    {% if artwork.description %}<div class="detail-description">{{ artwork.description|linebreaks }}</div>{% endif %}
+    <dl class="artwork-facts">
+      {% if artwork.dimensions %}<div><dt>Dimensões</dt><dd>{{ artwork.dimensions }}</dd></div>{% endif %}
+      {% if artwork.materials %}<div><dt>Materiais</dt><dd>{{ artwork.materials }}</dd></div>{% endif %}
+      {% if artwork.creation_date %}<div><dt>Data</dt><dd>{{ artwork.creation_date|date:"F Y" }}</dd></div>{% endif %}
+      {% if artwork.creation_location %}<div><dt>Local de criação</dt><dd>{{ artwork.creation_location }}</dd></div>{% endif %}
+    </dl>
+    <div class="share-block">
+      <p>Compartilhe esta obra</p>
+      <div class="share-links">
+        <a class="share-button" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener noreferrer">Facebook <span aria-hidden="true">↗</span></a>
+        <button class="share-button copy-link" type="button" data-share-url="{{ request.build_absolute_uri }}">Compartilhar / copiar link</button>
+        <button class="share-button copy-link" type="button" data-share-url="{{ request.build_absolute_uri }}">Instagram · compartilhar link</button>
+        {% if instagram_url %}<a class="share-button" href="{{ instagram_url }}" target="_blank" rel="noopener noreferrer">Instagram <span aria-hidden="true">↗</span></a>{% endif %}
+      </div>
+      <span class="copy-feedback" aria-live="polite"></span>
+      <p class="share-note">No Instagram, compartilhe o link da obra em uma publicação ou mensagem.</p>
+    </div>
+  </div>
+</article>
+{% endblock %}

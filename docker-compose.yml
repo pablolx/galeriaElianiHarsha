@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-eliani}
+      POSTGRES_USER: ${POSTGRES_USER:-eliani}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-eliani-local}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eliani} -d ${POSTGRES_DB:-eliani}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py load_initial_artworks && python manage.py runserver 0.0.0.0:8000"
+    environment:
+      DEBUG: "1"
+      SECRET_KEY: ${SECRET_KEY:-local-development-only-change-me}
+      DATABASE_URL: postgres://${POSTGRES_USER:-eliani}:${POSTGRES_PASSWORD:-eliani-local}@db:5432/${POSTGRES_DB:-eliani}
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      MEDIA_ROOT: /app/media
+      CONTACT_EMAIL: ${CONTACT_EMAIL:-}
+      INSTAGRAM_URL: ${INSTAGRAM_URL:-}
+      EMAIL_HOST: ${EMAIL_HOST:-}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-1}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-}
+    volumes:
+      - .:/app
+      - media_data:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  media_data:

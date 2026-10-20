@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Obras — Eliani Harsha{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <p class="eyebrow">Pintura · desenho · papel machê</p>
+  <h1>Obras</h1>
+  <p>Um conjunto de trabalhos inspirados pela natureza, pela força feminina e pela reinvenção dos materiais.</p>
+</section>
+{% if artworks %}
+<section class="section artwork-grid gallery-grid">
+  {% for artwork in artworks %}
+  <a class="artwork-card" href="{% url 'artwork_detail' artwork.slug %}">
+    <div class="artwork-image"><img src="{{ artwork.image.url }}" alt="{{ artwork.alt_text|default:artwork.title }}" loading="lazy"></div>
+    <div class="artwork-card-caption"><h2>{{ artwork.title }}</h2><span aria-hidden="true">↗</span></div>
+    {% if artwork.materials %}<p class="muted">{{ artwork.materials }}</p>{% endif %}
+  </a>
+  {% endfor %}
+</section>
+{% else %}
+<section class="empty-state"><h2>Novas obras em breve</h2><p>A galeria está sendo preparada. Volte em breve para conhecer os trabalhos.</p></section>
+{% endif %}
+{% endblock %}

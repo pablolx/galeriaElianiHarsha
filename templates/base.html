@@ -1,0 +1,61 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f4ef">
+  <title>{% block title %}Eliani Harsha — arte, natureza e reuso{% endblock %}</title>
+  <meta name="description" content="{% block description %}Conheça as obras e a trajetória da artista Eliani Harsha.{% endblock %}">
+  {% block social_meta %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Eliani Harsha — arte, natureza e reuso">
+  <meta property="og:description" content="Conheça as obras e a trajetória da artista Eliani Harsha.">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  {% endblock %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="site-header">
+    <a class="brand" href="{% url 'home' %}" aria-label="Eliani Harsha — página inicial">
+      <span class="brand-name">Eliani Harsha</span>
+      <span class="brand-caption">Arte, natureza e reuso</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="sr-only menu-label">Abrir menu</span><span></span><span></span>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Navegação principal">
+      <a href="{% url 'artwork_list' %}">Obras</a>
+      <a href="{% url 'biography' %}">Biografia</a>
+      <a href="{% url 'contact' %}">Contato</a>
+    </nav>
+  </header>
+  <main id="conteudo">
+    {% if messages %}
+      <div class="messages" role="status">
+        {% for message in messages %}<p class="message {{ message.tags }}">{{ message }}</p>{% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <a class="footer-brand" href="{% url 'home' %}">Eliani Harsha</a>
+    <p>Arte que aproxima natureza, memória e transformação.</p>
+    <div class="footer-links">
+      <a href="{% url 'artwork_list' %}">Obras</a>
+      <a href="{% url 'biography' %}">Biografia</a>
+      <a href="{% url 'contact' %}">Contato</a>
+      {% if instagram_url %}<a href="{{ instagram_url }}" target="_blank" rel="noopener noreferrer">Instagram</a>{% endif %}
+      <a href="{% url 'admin:index' %}">Administração</a>
+    </div>
+    <small>© {% now "Y" %} Eliani Harsha</small>
+  </footer>
+  <script src="{% static 'js/site.js' %}" defer></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

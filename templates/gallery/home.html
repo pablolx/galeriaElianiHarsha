@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Eliani Harsha — artista visual{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">Artista visual · Natal, RN</p>
+    <h1>Arte que nasce do encontro entre <em>natureza</em> e transformação.</h1>
+    <p class="hero-intro">Pinturas, desenhos e criações que celebram a força feminina e dão novos sentidos aos materiais.</p>
+    <a class="button button-dark" href="{% url 'artwork_list' %}">Conheça as obras <span aria-hidden="true">↗</span></a>
+  </div>
+  {% with hero_artwork=featured_artworks.0 %}
+  {% if hero_artwork %}
+  <a class="hero-artwork" href="{% url 'artwork_detail' hero_artwork.slug %}">
+    <img src="{{ hero_artwork.image.url }}" alt="{{ hero_artwork.alt_text|default:hero_artwork.title }}" fetchpriority="high">
+    <span class="artwork-label">{{ hero_artwork.title }} <span aria-hidden="true">↗</span></span>
+  </a>
+  {% else %}
+  <div class="hero-artwork hero-placeholder" aria-label="Galeria de arte em preparação">
+    <span>Um espaço para a arte, a natureza e novas possibilidades.</span>
+  </div>
+  {% endif %}
+  {% endwith %}
+</section>
+
+{% if next_exhibition %}
+<section class="exhibition-banner">
+  <div><p class="eyebrow">Próximo encontro</p><h2>{{ next_exhibition.title }}</h2></div>
+  <div class="exhibition-info">
+    <p>{{ next_exhibition.start_date|date:"d \d\e F \d\e Y" }}{% if next_exhibition.end_date and next_exhibition.end_date != next_exhibition.start_date %} — {{ next_exhibition.end_date|date:"d \d\e F \d\e Y" }}{% endif %} · {{ next_exhibition.location }}</p>
+    {% if next_exhibition.description %}<p>{{ next_exhibition.description }}</p>{% endif %}
+    {% if next_exhibition.external_url %}<a href="{{ next_exhibition.external_url }}" target="_blank" rel="noopener noreferrer">Saiba mais ↗</a>{% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% if featured_artworks %}
+<section class="section section-artworks">
+  <div class="section-heading">
+    <div><p class="eyebrow">Um olhar sobre a criação</p><h2>Obras em destaque</h2></div>
+    <a class="text-link" href="{% url 'artwork_list' %}">Ver todas as obras <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="artwork-grid">
+    {% for artwork in featured_artworks %}
+    <a class="artwork-card" href="{% url 'artwork_detail' artwork.slug %}">
+      <div class="artwork-image"><img src="{{ artwork.image.url }}" alt="{{ artwork.alt_text|default:artwork.title }}" loading="lazy"></div>
+      <div class="artwork-card-caption"><h3>{{ artwork.title }}</h3><span aria-hidden="true">↗</span></div>
+      {% if artwork.materials %}<p class="muted">{{ artwork.materials }}</p>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="home-about">
+  <div><p class="eyebrow">Arte com propósito</p><h2>Uma trajetória guiada pela curiosidade e pelo cuidado com a vida.</h2></div>
+  <div><p>Da arquitetura ao ambientalismo, da Amazônia a Natal: a experiência de Eliani atravessa paisagens, materiais e formas de expressão.</p><a class="text-link" href="{% url 'biography' %}">Conheça sua história <span aria-hidden="true">↗</span></a></div>
+</section>
+{% endblock %}
