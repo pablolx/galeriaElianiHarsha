@@ -12,7 +12,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Acesse `http://localhost:8000`. O serviço importa as imagens de `IMG/` como obras iniciais na primeira execução. A importação é idempotente; imagens já importadas não são duplicadas. Os arquivos originais em `IMG/` permanecem intactos.
+Acesse `http://localhost:8000`. O Compose inicia PostgreSQL e configura `DATABASE_URL` para o serviço Django. O serviço importa as imagens de `IMG/` como obras iniciais na primeira execução. A importação é idempotente; imagens já importadas não são duplicadas. Os arquivos originais em `IMG/` permanecem intactos.
 
 Para criar uma conta administrativa:
 
@@ -22,7 +22,7 @@ docker compose exec web python manage.py createsuperuser
 
 O painel fica em `http://localhost:8000/admin/`. Somente usuários autenticados com acesso de equipe podem entrar. Use contas de superusuário para a artista e o administrador ou conceda a uma conta de equipe apenas as permissões de obras e exposições necessárias.
 
-Para executar sem Docker, instale `requirements.txt` e execute `python manage.py migrate`, `python manage.py load_initial_artworks` e `python manage.py runserver`. Sem `DATABASE_URL`, o Django usa SQLite localmente.
+Para executar sem Docker, instale `requirements.txt`, configure `DATABASE_URL` para uma instância PostgreSQL acessível (por exemplo, `postgresql://eliani:senha@localhost:5432/eliani`) e execute `python manage.py migrate`, `python manage.py load_initial_artworks` e `python manage.py runserver`. Em desenvolvimento, se `DATABASE_URL` não estiver definida, o Django usa SQLite localmente. Com `DEBUG=0`, `DATABASE_URL` é obrigatória e o projeto recusa iniciar se a URL não selecionar PostgreSQL.
 
 ## Obras, eventos e contato
 
@@ -40,7 +40,7 @@ O formulário e o link de contato usam `pablo.pinheiro@gmail.com` por padrão; a
 
 O serviço web usa o plano `starter` e o banco usa `basic-256mb`; ambos são pagos. O disco persistente requer uma instância compatível e aumenta o custo. Confira os preços e a disponibilidade atuais na sua região e workspace antes de confirmar.
 
-`SECRET_KEY` é gerada pelo Blueprint. `ALLOWED_HOSTS` inclui automaticamente o hostname padrão do Render (`RENDER_EXTERNAL_HOSTNAME`). Se conectar um domínio próprio, adicione seu hostname à variável `ALLOWED_HOSTS` no painel do serviço. O endereço de contato inicial é `pablo.pinheiro@gmail.com`.
+`SECRET_KEY` é gerada pelo Blueprint. `DATABASE_URL` é preenchida automaticamente com a URL do PostgreSQL provisionado pelo Blueprint; não é necessário copiá-la manualmente. `ALLOWED_HOSTS` inclui automaticamente o hostname padrão do Render (`RENDER_EXTERNAL_HOSTNAME`). Se conectar um domínio próprio, adicione seu hostname à variável `ALLOWED_HOSTS` no painel do serviço. O endereço de contato inicial é `pablo.pinheiro@gmail.com`.
 
 Imagens que já estão no repositório são importadas para o disco na primeira inicialização, sem alterar os originais. O disco preserva novas imagens cadastradas pelo Admin entre deploys; mantenha-o anexado ao serviço. Migrações e importação idempotente das imagens iniciais são executadas na inicialização.
 

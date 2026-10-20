@@ -71,12 +71,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL and not DEBUG:
+    raise ImproperlyConfigured(
+        "DATABASE_URL must point to PostgreSQL when DEBUG is disabled."
+    )
+
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
     )
 }
+if not DEBUG and DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":
+    raise ImproperlyConfigured(
+        "Production deployments must use PostgreSQL through DATABASE_URL."
+    )
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
