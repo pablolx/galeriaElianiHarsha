@@ -9,7 +9,7 @@ services:
     name: eliani-harsha
     runtime: docker
     plan: starter
-    healthCheckPath: /
+    healthCheckPath: /health/
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -23,24 +23,10 @@ services:
         value: "1"
       - key: SECURE_HSTS_SECONDS
         value: "31536000"
-      - key: ALLOWED_HOSTS
-        value: eliani-harsha.onrender.com
       - key: MEDIA_ROOT
         value: /var/data/media
       - key: CONTACT_EMAIL
-        sync: false
-      - key: INSTAGRAM_URL
-        sync: false
-      - key: EMAIL_HOST
-        sync: false
-      - key: EMAIL_PORT
-        value: "587"
-      - key: EMAIL_HOST_USER
-        sync: false
-      - key: EMAIL_HOST_PASSWORD
-        sync: false
-      - key: DEFAULT_FROM_EMAIL
-        sync: false
+        value: pablo.pinheiro@gmail.com
     disk:
       name: eliani-media
       mountPath: /var/data/media

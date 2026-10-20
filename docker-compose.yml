@@ -22,7 +22,7 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER:-eliani}:${POSTGRES_PASSWORD:-eliani-local}@db:5432/${POSTGRES_DB:-eliani}
       ALLOWED_HOSTS: localhost,127.0.0.1
       MEDIA_ROOT: /app/media
-      CONTACT_EMAIL: ${CONTACT_EMAIL:-}
+      CONTACT_EMAIL: ${CONTACT_EMAIL:-pablo.pinheiro@gmail.com}
       INSTAGRAM_URL: ${INSTAGRAM_URL:-}
       EMAIL_HOST: ${EMAIL_HOST:-}
       EMAIL_PORT: ${EMAIL_PORT:-587}

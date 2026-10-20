@@ -14,4 +14,4 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py load_initial_artworks && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py load_initial_artworks && gunicorn config.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]

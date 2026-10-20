@@ -14,10 +14,19 @@ if not SECRET_KEY:
         SECRET_KEY = "local-development-only-" + "do-not-use-in-production-" * 3
     else:
         raise ImproperlyConfigured("SECRET_KEY must be configured when DEBUG is disabled.")
-ALLOWED_HOSTS = [
+ALLOWED_HOSTS = {
     host.strip()
     for host in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
     if host.strip()
+}
+render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if render_hostname:
+    ALLOWED_HOSTS.add(render_hostname)
+ALLOWED_HOSTS = sorted(ALLOWED_HOSTS)
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
 ]
 
 INSTALLED_APPS = [
@@ -102,7 +111,7 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "1") == "1"
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL") or "site@elianiharsha.com"
-CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL", "")
+CONTACT_EMAIL = os.environ.get("CONTACT_EMAIL") or "pablo.pinheiro@gmail.com"
 INSTAGRAM_URL = os.environ.get("INSTAGRAM_URL", "")
 EMAIL_BACKEND = (
     "django.core.mail.backends.smtp.EmailBackend"
@@ -113,6 +122,7 @@ EMAIL_BACKEND = (
 if not DEBUG:
     SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", "31536000"))
     SECURE_SSL_REDIRECT = os.environ.get("SECURE_SSL_REDIRECT", "1") == "1"
+    SECURE_REDIRECT_EXEMPT = [r"^health/$"]
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "1") == "1"
     CSRF_COOKIE_SECURE = os.environ.get("CSRF_COOKIE_SECURE", "1") == "1"

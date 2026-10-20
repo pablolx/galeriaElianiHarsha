@@ -150,3 +150,13 @@ class AdministrationAccessTests(TestCase):
         response = self.client.get("/admin/")
         self.assertEqual(response.status_code, 302)
         self.assertIn("/admin/login/", response.url)
+
+    @override_settings(
+        DEBUG=False,
+        SECURE_SSL_REDIRECT=True,
+        SECURE_REDIRECT_EXEMPT=[r"^health/$"],
+    )
+    def test_render_health_check_is_available_without_https_redirect(self):
+        response = self.client.get(reverse("health_check"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, b"ok")
